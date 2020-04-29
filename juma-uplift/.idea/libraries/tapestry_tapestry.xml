@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="tapestry-tapestry">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/stax2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/wstx-asl.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
