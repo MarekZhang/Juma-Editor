@@ -8,6 +8,14 @@
 
 <head>
 	<style>
+		.Wikicontent{
+			margin-left:150px;
+			margin-right:150px;
+		}
+
+		p li{
+			font-size:20px;
+		}
 
 		legend {
 			background-color: #000;
@@ -85,6 +93,7 @@
 	<li role="presentation"><a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">Configuration</a></li>
 	<li role="presentation"><a href="#tab3" aria-controls="tab3" role="tab" data-toggle="tab">R2RML-Mapping</a></li>
 	<li role="presentation"><a href="#tab4" aria-controls="tab4" role="tab" data-toggle="tab">SML-Mapping</a></li>
+	<li role="presentation"><a href="#tab5" aria-controls="tab5" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-search" aria-hidden="true"  ></span>Wiki</a></li>
 </ul>
 
 
@@ -302,6 +311,81 @@
 			</div>
 		</div>
 	</div>
+
+	<div role="tabpanel" class="tab-pane" id="tab5">
+		<div class="Wikicontent">
+			<div class="header">
+				<h2>Juma Block Wiki</h2>
+				<hr/>
+			</div>
+			<div class="content">
+				<p> Blocks in Juma are divided in to the following categories: </p>
+				<ul>
+					<li><a href="#MappingContent">Mapping</a></li>
+					<li><a href="#VocabulariesContent">Vocabularies</a></li>
+					<li><a href="#SubjectContent">Subject</a></li>
+					<li><a href="#PredObjContent">Predicate/Object</a></li>
+					<li><a href="#LinkingContent">Linking</a></li>
+					<li><a href="#FunctionsContent">Functions</a></li>
+					<li><a href="#GraphContent">Graph</a></li>
+					<li><a href="#CommentContent">Comment</a></li>
+					<li><a href="#Tips">Tips</a></li>
+				</ul>
+				<hr/>
+			</div>
+			<div id="MappingContent">
+				<h3>Mapping</h3>
+				<hr/>
+				<p>Mapping block is the framework for building a mapping. It has three statement inputs:</p>
+				<ul>
+					<li>table</li>
+					<li><a href="#VocabulariesContent">Vocabularies</a></li>
+					<li>Triples (including <a href="#SubjectContent">Subject</a> and <a href="#PredObjContent">Predicate/Object</a></li>
+				</ul>
+				<p>Here's an example:</p>
+				<p>
+					<img src="../images/mapping.png" height="350" width="820"></img>
+				</p>
+			</div><hr/>
+			<div id="VocabulariesContent">
+				<h3>Vocabularies</h3>
+				<hr/>
+				<p>For the Vocabularies blocks you can either use some predefined namespaces</p>
+				<img src="../images/vocabularies2.png" width="28%"></img>
+				<p>or describe a unique namespace by</p>
+				<img src="../images/vocabularies1.png" width="22%"></img>
+			</div><hr/>
+			<div id="SubjectContent">
+				<h3>Subject</h3>
+				<hr/>
+				<p>Each mapping definition must have at least one subject</p>
+				<img src="../images/subject.png" width="550"></img>
+				<p>
+					<a href="#SubjectContent">Subject</a> and <a href="#PredObjContent">Predicate/Object</a> can be:
+				</p>
+				<ul>
+					<li><b>constant:</b> a constant value e.g. foaf:name</li>
+					<li><b>template:</b> a string template e.g.
+						http://example.org/{id}, where values in curly
+						brackets are columns from the table being
+						mapped</li>
+					<li><b>column:</b> a column name e.g. Id or first_name</li>
+				</ul>
+				<img src="../images/using.png" width="400px"></img><hr/>
+
+				<p><b>Subjects may be defined as blank nodes</b></p>
+				<div><img src="../images/blanknode.png" width="450px"></img></div>
+				<div><img src="../images/output.png" width="450px"></img></div>
+				<hr/>
+				<p>A subject can be one instance of many classes</p>
+				<p>In this mapping, subjects will be instances of the class foaf:Person and csv:people</p>
+				<div><img src="../images/classes.png" width="550px"></img></div>
+				<div><img src="../images/classOutput.png" width="550px"></img></div>
+
+			</div>
+		</div>
+	</div>
+
 </div>
 
 <script src="${context:js/blockly_compressed.js}"></script>
@@ -404,6 +488,9 @@
 	<category name="Graph" colour="320">
 		<block type="graph"></block>
 	</category>
+	<category name="Comment" colour="#B2272D">
+			<block type="comment"></block>
+	</category>
 </xml>
 
 <div id="startBlocks" style="display:none">
@@ -486,12 +573,12 @@
 
 		var smlcode = SML.workspaceToCode(workspace);
 		document.getElementById('smlcode').value = smlcode;
-
 		document.getElementById('r2rmlmappinghidden').value = code;
 	};
 
 	function updateHiddenField() {
 		var xml = Blockly.Xml.workspaceToDom(workspace);
+
 		var xml_text = Blockly.Xml.domToText(xml);
 		document.getElementById('hiddenfield').value = xml_text;
 	};

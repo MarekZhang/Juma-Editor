@@ -31,7 +31,7 @@ var hasUnsupportedFunctions = false;
  */
 SML.finish = function(code) {
   var code = '// Mapping created using Juma editor. \n'
-                + code + (hasUnsupportedFunctions ? '\n\n//This mapping contains functions that are not supported by SML' : '');
+             + code + (hasUnsupportedFunctions ? '\n\n//This mapping contains functions that are not supported by SML' : '');
   hasUnsupportedFunctions = false;
   return code;
 };
@@ -56,8 +56,8 @@ SML.scrubNakedValue = function(line) {
 SML.quote_ = function(string) {
   // TODO: This is a quick hack.  Replace with goog.string.quote
   string = string.replace(/\\/g, '\\\\')
-                 .replace(/\n/g, '\\\n')
-                 .replace(/'/g, '\\\'');
+      .replace(/\n/g, '\\\n')
+      .replace(/'/g, '\\\'');
   return '\'' + string + '\'';
 };
 
@@ -106,7 +106,7 @@ SML.base = function(block) {
   if (isDisconnected(block)) {
     return '';
   }
-  
+
   var uri = block.getFieldValue('URI');
   return "  @base <" + uri + "> \n";
 };
@@ -140,40 +140,40 @@ SML.mapping = function(block) {
     var mappingWithGraph = '';
     for (var i = 0; i < graphs.length; i++) {
       mappingWithGraph += '\nGraph '
-                        + graphs[i] + '\n { \n'
-                        + subjects
-                        + '\n }\n';
+                          + graphs[i] + '\n { \n'
+                          + subjects
+                          + '\n }\n';
     }
     subjects = mappingWithGraph;
   }
-  
+
   if(subjects == '') {
     return SML.statementToCode(block, 'vocabs') + '\n' + linkings + '\n';
   }
-  
+
   viewCount++;
-  return SML.statementToCode(block, 'vocabs') + "\nCreate View view" + viewCount + " As \n Construct { " 
-                        + subjects
-                        + " }\n With " 
-                        + withVars 
-                        + '\n From ' + sqlfrom
-                        + ((linkings != '') ? ('\n //Linkings \n' + linkings) : '');
+  return SML.statementToCode(block, 'vocabs') + "\nCreate View view" + viewCount + " As \n Construct { "
+         + subjects
+         + " }\n With "
+         + withVars
+         + '\n From ' + sqlfrom
+         + ((linkings != '') ? ('\n //Linkings \n' + linkings) : '');
 };
 
 SML.subjectdef = function(block) {
 
   return SML.statementToCode(block, 'source')
-              + SML.statementToCode(block, 'properties') ; 
+         + SML.statementToCode(block, 'properties') ;
 }
 
 SML.subject = function(block) {
   if (isDisconnected(block)) {
     return '';
   }
-  if(block.getParent() != undefined && block.getParent().getChildren().length > 1 && isParentTriplesMap(block.getParent().getChildren()[1])) { 
-		return '';
-	}
-	subjectCount++;
+  if(block.getParent() != undefined && block.getParent().getChildren().length > 1 && isParentTriplesMap(block.getParent().getChildren()[1])) {
+    return '';
+  }
+  subjectCount++;
   subjectName = '?s' + subjectCount;
 
   var uriOrBNode = '';
@@ -197,34 +197,34 @@ function isBlankNode(block) {
         return true;
       }
     }
-    return false; 
+    return false;
   }
 }
 
 function parseTemplate(str) {
   var args = [];
   while (str) {
-      if (str.indexOf("{") !== -1 && str.indexOf("}") !== -1) {
-          var openIdx = str.indexOf('{');
-          var closeIdx = str.indexOf('}');
-          var strLen = str.length;
+    if (str.indexOf("{") !== -1 && str.indexOf("}") !== -1) {
+      var openIdx = str.indexOf('{');
+      var closeIdx = str.indexOf('}');
+      var strLen = str.length;
 
-          if (openIdx > 0) {
-              args.push("\'" + str.substring(0, openIdx) + "\'");
-          }
-
-          var strVar = str.substring(openIdx+1, closeIdx);
-          if (strVar.indexOf(' ') !== -1) {
-            args.push('?\"' + strVar + '\"');
-          } else {
-            args.push('?' + strVar);
-          }
-
-          str = str.substring(closeIdx+1, strLen);
-      } else {
-          args.push("\'" + str + "\'");
-          str = "";
+      if (openIdx > 0) {
+        args.push("\'" + str.substring(0, openIdx) + "\'");
       }
+
+      var strVar = str.substring(openIdx+1, closeIdx);
+      if (strVar.indexOf(' ') !== -1) {
+        args.push('?\"' + strVar + '\"');
+      } else {
+        args.push('?' + strVar);
+      }
+
+      str = str.substring(closeIdx+1, strLen);
+    } else {
+      args.push("\'" + str + "\'");
+      str = "";
+    }
   }
 
   var template = '';
@@ -286,7 +286,7 @@ function smlterms(block) {
     code = parseTemplate(block.getFieldValue('TERMMAPVALUE'));
   } else if (termmap == 'COLUMN'){
     code = "?" + block.getFieldValue('TERMMAPVALUE');
-  } 
+  }
 
   return code;
 }
@@ -305,16 +305,16 @@ SML.graph = function(block) {
 }
 
 function isParentTriplesMap(block) {
-	return block.getInput('object') != null && block.getInput('object').connection.targetConnection != null && block.getInput('object').connection.targetConnection.sourceBlock_.type == 'linking_mappings';
+  return block.getInput('object') != null && block.getInput('object').connection.targetConnection != null && block.getInput('object').connection.targetConnection.sourceBlock_.type == 'linking_mappings';
 }
 
 SML.predicate_object = function(block) {
-	if(isParentTriplesMap(block)) { // Function not supported should not create triple in SPARQL
-		SML.statementToCode(block, 'object');
-		return '';
-	}
+  if(isParentTriplesMap(block)) { // Function not supported should not create triple in SPARQL
+    SML.statementToCode(block, 'object');
+    return '';
+  }
   return '\n' + subjectName + ' ' + SML.statementToCode(block, 'predicate') + " "
-                            + SML.statementToCode(block, 'object') + ".";
+         + SML.statementToCode(block, 'object') + ".";
 }
 
 SML.predicate = function(block) {
@@ -353,12 +353,12 @@ SML.object = function(block) {
     if(block.getFieldValue('TERMMAP') == 'CONSTANT') {
       return objectValue;
     } else if(block.getFieldValue('TERMMAP') == 'TEMPLATE') {
-      objectValue = 'uri('+ objectValue +')';    
+      objectValue = 'uri('+ objectValue +')';
     } else {
-      objectValue = 'plainLiteral('+ objectValue +')';    
+      objectValue = 'plainLiteral('+ objectValue +')';
     }
   }
-  
+
   withVars += '\n  ' + objectVar + ' = ' + objectValue;
   return objectVar;
 }
@@ -367,7 +367,7 @@ function findSubjectOfChild(subjectId) {
   var blocks = getBlocksByType('subjectdef');
   for (var i = 0; i < blocks.length; i++) {
     if(blocks[i].getFieldValue('ID') == subjectId) {
-        return blocks[i];
+      return blocks[i];
     }
   }
   return null;
@@ -379,7 +379,7 @@ function findLogicalTable(block) {
   }
   if(block.type == 'mapping') {
     if(block.getChildren()[0].getFieldValue('TABLESQLQUERY') == 'table') {
-      return block.getChildren()[0].sql;  
+      return block.getChildren()[0].sql;
     }
     return '(' + block.getChildren()[0].sql + ')';
   }
@@ -396,19 +396,24 @@ function findSubject(block) {
   return findSubject(block.getParent());
 }
 
+SML.comment = function(block){
+  return '';
+}
+
+
 SML.linking_mappings = function(block) {
   if (isDisconnected(block) || block.getParent().getParent() == undefined) {
     return '';
   }
   var subjectOfChild = findSubjectOfChild(block.getFieldValue('LINK'));
   if(subjectOfChild == null) {
-  	return '';
+    return '';
   }
 
   var subjectVar = '?s1';
   var predicateVar = '?p1';
   var objectVar = '?o1';
-  
+
   var parentLogicalTable = findLogicalTable(block); // find logical table of parent
   var childLogicalTable = findLogicalTable(subjectOfChild); // find logical table of child 
 
@@ -421,7 +426,7 @@ SML.linking_mappings = function(block) {
   } else {
     uriOrBNode = 'uri';
   }
-	var subjectValue = uriOrBNode + '(' + smlterms(subjectBlock) + ')';
+  var subjectValue = uriOrBNode + '(' + smlterms(subjectBlock) + ')';
 
   var predicateValue = '';
   var predicateBlock = block.getParent().getChildren()[0];
@@ -437,24 +442,24 @@ SML.linking_mappings = function(block) {
   if(this.arguments_.length == 0) {
     sql = '\n [[\n  SELECT * FROM ' + childLogicalTable + ' AS tmp \n]]';
   } else {
-    sql = '\n [[\n  SELECT * FROM ' + childLogicalTable + ' AS child, ' + parentLogicalTable + ' AS parent WHERE \n'; 
+    sql = '\n [[\n  SELECT * FROM ' + childLogicalTable + ' AS child, ' + parentLogicalTable + ' AS parent WHERE \n';
     for (var i = 0; i < this.arguments_.length; i++) {
       var join = this.arguments_[i];
       if(i != 0) {
-        sql += ' AND ';  
+        sql += ' AND ';
       }
       sql += " child." + join[1] + " = parent." + join[0] + "\n ";
     }
     sql += ' ]]';
   }
 
-  linkings += "\nCreate View view" + (++viewCount) + " As \n Construct { " 
-                        + subjectVar +  ' ' + (isPredicateConstant ? predicateValue : predicateVar) + ' ' + objectVar + ' .'
-                        + " }\n With \n" 
-                        + subjectVar + ' = ' + subjectValue 
-                        + (isPredicateConstant ? '' : ('\n' + predicateVar + ' = ' + predicateValue))
-                        + '\n' + objectVar + ' = ' + objectValue + '\n'
-                        + 'From ' + sql + '\n';
+  linkings += "\nCreate View view" + (++viewCount) + " As \n Construct { "
+              + subjectVar +  ' ' + (isPredicateConstant ? predicateValue : predicateVar) + ' ' + objectVar + ' .'
+              + " }\n With \n"
+              + subjectVar + ' = ' + subjectValue
+              + (isPredicateConstant ? '' : ('\n' + predicateVar + ' = ' + predicateValue))
+              + '\n' + objectVar + ' = ' + objectValue + '\n'
+              + 'From ' + sql + '\n';
   return '';
 }
 
@@ -486,9 +491,9 @@ SML.concat = function(block) {
       objectValue = 'plainLiteral('+ objectValue +', \"' + block.termtypevalue + '\")';
     }
   } else {
-    objectValue = 'plainLiteral('+ objectValue +')';    
+    objectValue = 'plainLiteral('+ objectValue +')';
   }
-  
+
   withVars += '\n  ' + objectVar + ' = ' + objectValue;
   return objectVar;
 }

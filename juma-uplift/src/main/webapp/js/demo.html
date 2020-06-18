@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Blockly core imports -->
+    <script src="blockly_compressed.js"></script>
+    <script src="blocks_compressed.js"></script>
+    <script src="en.js"></script>
+    <script src="messages.js"></script>
+    <script src="demo.js"></script>
+    <script src="plus-minus-blocks.js"></script>
+    <script src="field_plus.js"></script>
+    <script src="field_minus.js"></script>
+
+
+    <!-- R2RML Blockly -->
+<!--    <script src="juma.js"></script>-->
+<!--    <script src="juma_r2rml_generator.js"></script>-->
+<!--    <script src="juma_sml_generator.js"></script>-->
+<!--    <script src="color.js"></script>-->
+    <script>
+
+
+    </script>
+</head>
+<body>
+<div id="blocklyDiv" style="height: 480px; width: 900px;"></div>
+<!--    <xml id="toolbox" style="display: none">-->
+<!--        <category name="Text">-->
+<!--            <field name="object"></field>-->
+<!--        </category>-->
+<!--        <categor name="demo">-->
+<!--            <field name="FIELDNAME">FALSE</field>-->
+<!--        </categor>-->
+<!--    </xml>-->
+<xml id="toolbox" style="display: none">
+    <category name="Text">
+        <block type="comment"></block>
+<!--        <block type="controls_if"></block>-->
+    </category>
+</xml>
+
+</body>
+
+<!--<script>-->
+<!--var workspace = Blockly.inject('blocklyDiv',-->
+<!--                           {toolbox: document.getElementById('toolbox'),-->
+<!--                               zoom:-->
+<!--                                   {controls: true,-->
+<!--                                       //wheel: true,-->
+<!--                                       startScale: 0.7,-->
+<!--                                       maxScale: 3,-->
+<!--                                       minScale: 0.3,-->
+<!--                                       scaleSpeed: 1.1},-->
+<!--                               trashcan: true});-->
+
+<!--</script>-->
+<script>
+    // alert(window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/')));
+    var workspace = Blockly.inject('blocklyDiv',
+                                   {toolbox: document.getElementById('toolbox')});
+</script>
+</html>

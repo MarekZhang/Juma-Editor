@@ -12,6 +12,7 @@ var objectColour = '#0099cc';
 var graphColour = 320;
 var functionColour = '#0099cc';
 var loadColour = '#6e8720';
+var CommentColour = "#B2272D"
 
 var vocabs = [
         ['rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>', 'rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>'],
@@ -61,6 +62,19 @@ var graphMap = 'Graph';
 
 
 // between the groups
+
+Blockly.Blocks['comment'] = {
+    init: function(){
+        this.setColour(CommentColour);
+        this.appendDummyInput()
+            .appendField('Comment: ')
+            .appendField(new Blockly.FieldTextInput('insert comment content here'), 'commentContent');
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, ['bnode', 'predicate_object', 'subject', 'graph']);
+        this.setNextStatement(true, ['bnode', 'predicate_object', 'subject', 'graph']);
+        this.setTooltip('insert comment content');
+    }
+};
 
 Blockly.Blocks['mapping'] = {
     init: function() {

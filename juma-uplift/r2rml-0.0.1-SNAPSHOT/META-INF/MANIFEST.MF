@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven 3.6.3
+Built-By: zhangbowen
+Build-Jdk: 12.0.2
+Class-Path: dependency/jena-arq-3.0.1.jar dependency/jena-shaded-guava-3
+ .0.1.jar dependency/httpclient-4.2.6.jar dependency/httpcore-4.2.5.jar 
+ dependency/commons-codec-1.6.jar dependency/jsonld-java-0.7.0.jar depen
+ dency/jackson-core-2.3.3.jar dependency/jackson-databind-2.3.3.jar depe
+ ndency/jackson-annotations-2.3.0.jar dependency/commons-io-2.4.jar depe
+ ndency/httpclient-cache-4.2.6.jar dependency/libthrift-0.9.2.jar depend
+ ency/jcl-over-slf4j-1.7.12.jar dependency/commons-csv-1.0.jar dependenc
+ y/commons-lang3-3.3.2.jar dependency/slf4j-api-1.7.12.jar dependency/sl
+ f4j-log4j12-1.7.12.jar dependency/log4j-1.2.17.jar dependency/jena-core
+ -3.0.1.jar dependency/xercesImpl-2.11.0.jar dependency/xml-apis-1.4.01.
+ jar dependency/commons-cli-1.3.jar dependency/jena-base-3.0.1.jar depen
+ dency/dexx-collections-0.2.jar dependency/jena-iri-3.0.1.jar dependency
+ /junit-4.11.jar dependency/hamcrest-core-1.3.jar dependency/mysql-conne
+ ctor-java-5.1.25.jar dependency/postgresql-9.1-901.jdbc4.jar dependency
+ /ojdbc7-12.1.0.2.jar dependency/h2-1.4.193.jar
+Main-Class: r2rml.Main
+

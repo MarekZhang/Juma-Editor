@@ -26,11 +26,20 @@ R2RML.init = function(workspace) {
  * @return {string} Completed code.
  */
 R2RML.finish = function(code) {
-  return '# Mapping created using Juma editor. '
+  if(!hasComment || code.includes('rdf-schema')){
+    return '# Mapping created using Juma editor. '
                 + '\n  @prefix rr: <http://www.w3.org/ns/r2rml#> .'
-                + '\n  @prefix rrf: <http://kdeg.scss.tcd.ie/ns/rrf#> . \n' 
+                + '\n  @prefix rrf: <http://kdeg.scss.tcd.ie/ns/rrf#> . \n'
                 + code
                 + generateFunctions();
+  }else {
+    return '# Mapping created using Juma editor. '
+           + '\n  @prefix rr: <http://www.w3.org/ns/r2rml#> .'
+           + '\n  @prefix rrf: <http://kdeg.scss.tcd.ie/ns/rrf#> . \n'
+           + '  @prefix  rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n'
+           + code
+           + generateFunctions();
+  }
 };
 
 var functions = {};
@@ -188,6 +197,27 @@ function isDisconnected(block) {
   return block.getParent() == undefined;
 }
 
+var hasComment =false;
+R2RML.comment = function(block){
+  if (isDisconnected(block)) {
+    return '';
+  }
+  var commentContent = block.getFieldValue('commentContent')
+  if(commentContent!==''){
+    hasComment = true;
+    predicateObjectProperties += "\nrr:predicateObjectMap [ \n"
+                                 + "  rr:predicateMap [ \n"
+                                 + "    rr:constant rdfs:comment;\n"
+                                 + "  ];\n"
+                                 + "\n   rr:objectMap [ \n"
+                                 + "    rr:constant \'" + commentContent + "\';\n"
+                                 + "    rr:termType rr:Literal;\n"
+                                 + "   ];\n"
+                                 + "];\n"
+  }
+  return '';
+}
+
 R2RML.base = function(block) {
   if (isDisconnected(block)) {
     return '';
@@ -213,15 +243,23 @@ var subjectProperties = '';
 var predicateObjectProperties = '';
 
 R2RML.subjectdef = function(block) {
-  var triplemapname = 'TriplesMap' + block.getFieldValue('ID'); 
+  var triplemapname = 'TriplesMap' + block.getFieldValue('ID');
 
   subjectProperties = '';
   predicateObjectProperties = '';
-  R2RML.statementToCode(block, 'properties');
+  // var commentContent = block.getFieldValue("commentContent");
+  // if(block.getNextBlock().type === 'subjectdef'){
+  //   globalComment += "#" + commentContent + "\n";
+  // }
 
-  return "<#" + triplemapname + ">\n" + logicalTable
-              + "\n rr:subjectMap [ \n  " + R2RML.statementToCode(block, 'source') + subjectProperties + "\n ]; "
-              + "\n " + predicateObjectProperties + " \n. \n\n"; 
+  R2RML.statementToCode(block, 'properties');
+  R2RML.valueToCode(block, 'comment')
+  R2RML.statementToCode(block, 'comment');
+
+  return    "<#" + triplemapname + ">\n" + logicalTable
+            + "\n rr:subjectMap [ \n  " + R2RML.statementToCode(block, 'source')
+            + subjectProperties + "\n ]; "
+            + "\n " + predicateObjectProperties + " \n. \n\n";
 }
 
 R2RML.subject = function(block) {
@@ -295,7 +333,7 @@ R2RML.graph = function(block) {
 }
 
 R2RML.predicate_object = function(block) {
-  predicateObjectProperties += "\nrr:predicateObjectMap [ \n" 
+  predicateObjectProperties += "\nrr:predicateObjectMap [ \n"
                             + R2RML.statementToCode(block, 'predicate') + "\n "
                             + R2RML.statementToCode(block, 'object') +"];";
   return '';
