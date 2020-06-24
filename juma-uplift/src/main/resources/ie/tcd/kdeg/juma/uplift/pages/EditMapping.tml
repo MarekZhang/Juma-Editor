@@ -8,6 +8,23 @@
 
 <head>
 	<style>
+		.heading{
+			float: left;
+			height: 70px;
+		}
+		.dropdown {
+			float: left;
+			margin-top: 26px;
+			margin-left: 25px;
+			width:150px;
+		}
+		#clearDiv::after{
+			content: "";
+			visibility: hidden;
+			height: 0px;
+			display: block;
+			clear: both;
+		}
 		.Wikicontent{
 			margin-left:150px;
 			margin-right:150px;
@@ -82,10 +99,20 @@
 	</style>
 
 </head>
-
-<h1>Edit Mapping</h1>
-<t:alerts />
-
+<div class="heading">
+	<h1>Edit Mapping</h1>
+	<t:alerts />
+</div>
+<div class="dropdown">
+	<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Switch Mapping
+		<span class="caret"></span></button>
+	<ul class="dropdown-menu">
+		<t:loop source="MappingsList" value="temptMapping">
+			<li><t:pagelink page="EditMapping" context="temptMapping.id" ><span style="font-size:15px">${temptMapping.title}</span></t:pagelink></li>
+		</t:loop>
+	</ul>
+</div>
+<div id="clearDiv"></div>
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">

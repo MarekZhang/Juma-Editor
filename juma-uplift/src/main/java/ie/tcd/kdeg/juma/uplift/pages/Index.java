@@ -90,7 +90,6 @@ public class Index extends BasePage {
 
 	@CommitAfter //Execute this part after clicking createMapping
 	public void onSuccess() throws Exception {
-		// newMapping.setInputFormat(inputFormat.toString());
 		newMapping.setCreator(getUsername());
 		newMapping.setFormat("TTL");
 		session.persist(newMapping);
@@ -164,7 +163,11 @@ public class Index extends BasePage {
 	}
 
 
-	//add duplicate function
+	/**
+	 * Add the duplicate function
+	 * @author Bowen Zhang
+	 * @param mapping
+	 */
 	@CommitAfter
 	public void onActionFromDuplicate(Mapping mapping) {
 

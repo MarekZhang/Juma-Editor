@@ -34,6 +34,7 @@ import org.apache.tapestry5.services.javascript.JavaScriptSupport;
 import org.apache.tapestry5.upload.services.UploadedFile;
 import org.got5.tapestry5.jquery.JQueryEventConstants;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import ie.tcd.kdeg.juma.uplift.entities.InputFormat;
 import ie.tcd.kdeg.juma.uplift.entities.Mapping;
@@ -45,6 +46,9 @@ public class EditMapping extends BasePage {
 
 	@Property
 	private Mapping mapping;
+
+	@Property
+	private Mapping temptMapping;
 
 	@Inject
 	private Session session;
@@ -344,5 +348,9 @@ public class EditMapping extends BasePage {
 			}
 		};
 		return response;
+	}
+
+	public List<Mapping> getMappingsList() {
+		return session.createCriteria(Mapping.class).add(Restrictions.eq("creator", getUsername())).list();
 	}
 }
