@@ -39,6 +39,9 @@ import org.hibernate.criterion.Restrictions;
 import ie.tcd.kdeg.juma.uplift.entities.InputFormat;
 import ie.tcd.kdeg.juma.uplift.entities.Mapping;
 import ie.tcd.kdeg.juma.uplift.generatemapping.FileManager;
+
+import javax.servlet.http.HttpServletRequest;
+
 import r2rml.engine.Configuration;
 import r2rml.engine.R2RMLProcessor;
 
@@ -109,6 +112,9 @@ public class EditMapping extends BasePage {
 	@Property
 	private boolean fromCSV;
 
+	@Inject
+	private HttpServletRequest req;
+
 	public String onActivate(long id) throws IOException {
 		if (!securityService.isAuthenticated()) {
 			return "login";
@@ -129,9 +135,10 @@ public class EditMapping extends BasePage {
 
 	// refresh csvDB directory
 	private void refreshDiretory() throws IOException {
+		String path = req.getSession().getServletContext().getRealPath("/csvDB");
 		if (URL != null)
 			FileManager.urlToFile(URL, mapping.getId());
-		List<String> filePaths = FileManager.getCsvFilePaths(FileManager.CSV_FOLDER_PATH(mapping.getId()));
+		List<String> filePaths = FileManager.getCsvFilePaths(path + "/" + FileManager.CSV_FOLDER_PATH(mapping.getId()));
 		mapping.setCSVFiles(filePaths);
 		files = new ArrayList<File>();
 		for (String fp : filePaths) {
@@ -168,9 +175,10 @@ public class EditMapping extends BasePage {
 
 	@CommitAfter
 	public Object onSuccessFromEditConfiguration(long id) throws IOException {
+		String path = req.getSession().getServletContext().getRealPath("/csvDB");
 		if (fromCSV) {
 			refreshDiretory();
-			FileManager.saveCSVFile(upFiles, FileManager.CSV_FOLDER_PATH(mapping.getId()));
+			FileManager.saveCSVFile(upFiles, path + "/" + FileManager.CSV_FOLDER_PATH(mapping.getId()));
 			URL = null;
 			upFiles.clear();
 			refreshDiretory();

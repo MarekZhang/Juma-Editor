@@ -35,8 +35,11 @@ import org.hibernate.util.SerializationHelper;
 import sun.awt.geom.AreaOp;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 
 public class Index extends BasePage {
+	@Inject
+	private HttpServletRequest req;
 
 	@Property
 	private Mapping newMapping;
@@ -95,22 +98,23 @@ public class Index extends BasePage {
 		session.persist(newMapping);
 		session.flush();
 
+		String path = req.getSession().getServletContext().getRealPath("/csvDB");
 		// create directory for new mapping
-		new File(FileManager.CSV_FOLDER_PATH(newMapping.getId())).mkdirs();
+		new File(path + "/" + FileManager.CSV_FOLDER_PATH(newMapping.getId())).mkdirs();
 
 		// create directory for r2rml files of that mapping
-		new File(FileManager.R2RML_FOLDER_PATH(newMapping.getId())).mkdirs();
+		new File(path + "/" + FileManager.R2RML_FOLDER_PATH(newMapping.getId())).mkdirs();
 		// if csv's have been uploaded
 		if (!files.isEmpty()) {
 			// save csvs
-			FileManager.saveCSVFile(files, FileManager.CSV_FOLDER_PATH(newMapping.getId()));
+			FileManager.saveCSVFile(files, path + "/" + FileManager.CSV_FOLDER_PATH(newMapping.getId()));
 		}
 
 		// r2rml file but no csv's
 		if (file != null) {
 			try {
 				// save the r2rml files to directory & generate mapping
-				FileManager.saveR2RMlFile(file, FileManager.R2RML_FOLDER_PATH(newMapping.getId()));
+				FileManager.saveR2RMlFile(file, path + "/" + FileManager.R2RML_FOLDER_PATH(newMapping.getId()));
 				newMapping.setXML(TransformingR2RMLtoJuma.transform(file.getStream()));
 
 			} catch (Exception e) {
@@ -121,12 +125,12 @@ public class Index extends BasePage {
 			try {
 				// generate mapping from csvs
 				String mapping = new GenerateMapping()
-						.fromCSVtoR2RML(FileManager.getCsvFilePaths(FileManager.CSV_FOLDER_PATH(newMapping.getId())));
+						.fromCSVtoR2RML(FileManager.getCsvFilePaths(path + "/" + FileManager.CSV_FOLDER_PATH(newMapping.getId())));
 
 				// if r2rml mapping has been uploaded aswell add it to the r2rml
 				// string
 				if (file != null) {
-					FileManager.saveR2RMlFile(file, FileManager.R2RML_FOLDER_PATH(newMapping.getId()));
+					FileManager.saveR2RMlFile(file, path + "/" + FileManager.R2RML_FOLDER_PATH(newMapping.getId()));
 					mapping = mapping + streamToString(file.getStream());
 				}
 				InputStream targetStream = new ByteArrayInputStream(mapping.getBytes(StandardCharsets.UTF_8));
@@ -151,10 +155,11 @@ public class Index extends BasePage {
 
 	@CommitAfter
 	public void onActionFromDelete(Mapping mapping) {
+		String path = req.getSession().getServletContext().getRealPath("/csvDB");
 		session.delete(mapping);
 		//Local file should also be deleted -- Bowen Zhang
 		try{
-			FileManager.deleteAll(FileManager.CSV_FOLDER_PATH(mapping.getId()));
+			FileManager.deleteAll(path + "/" + FileManager.CSV_FOLDER_PATH(mapping.getId()));
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -170,7 +175,7 @@ public class Index extends BasePage {
 	 */
 	@CommitAfter
 	public void onActionFromDuplicate(Mapping mapping) {
-
+		String path = req.getSession().getServletContext().getRealPath("/csvDB");
 		Mapping mappingCopy = null;
 		try {
 			mappingCopy = null;
@@ -208,8 +213,8 @@ public class Index extends BasePage {
 				session.persist(mappingCopy);
 				session.flush();
 
-				String src = FileManager.CSV_FOLDER_PATH(mapping.getId());
-				String dst = FileManager.CSV_FOLDER_PATH(mappingCopy.getId());
+				String src = path + "/" + FileManager.CSV_FOLDER_PATH(mapping.getId());
+				String dst = path + "/" + FileManager.CSV_FOLDER_PATH(mappingCopy.getId());
 
 				// copy files from created mapping
 				try{

@@ -11,12 +11,22 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.upload.services.UploadedFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class FileManager {
+//	@Inject
+//	private HttpServletRequest req;
+//
+//	public HttpServletRequest getReq(){
+//		return req;
+//	}
 
 	public static String CSV_FOLDER_PATH(long id) {
-		return "csvDB" + File.separator + id + File.separator;
+
+		return  File.separator + id + File.separator;
 	}
 
 	public static String R2RML_FOLDER_PATH(long id) {
