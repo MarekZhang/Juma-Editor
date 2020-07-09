@@ -191,24 +191,29 @@ function isDisconnected(block) {
 }
 
 var metaComment = "";
+var hasMeta = false;
 var commentContent = "";
-var hasComment =false;
+var hasComment = false;
+
 R2RML.comment = function(block){
   if (isDisconnected(block)) {
     return '';
   }
+
   if(block!=null){
     if(inTable(block)){
       metaComment = "";
-      if(block.getFieldValue("commentContent")!=null){
-        metaComment = "  rdfs:comment \'" + block.getFieldValue("commentContent") +"\' ;\n";
-      }
+      hasMeta = false;
+      metaComment = "  rdfs:comment \'" + block.getFieldValue("commentContent") +"\';\n";
+      hasMeta = true;
     }else if(block.getNextBlock()!=null){
-      commentContent = "";
-      hasComment =false;
-      if(block.getNextBlock().type === "classes" || block.getNextBlock().type === "predicate_object"){
+      if(block.getNextBlock().type === "subjectdef"){
+        commentContent = "";
+        hasComment =false;
         commentContent += block.getFieldValue("commentContent");
         hasComment = true;
+      }else if(block.getNextBlock().type === "mapping"){
+
       }
     }
   }
@@ -247,12 +252,34 @@ R2RML.mapping = function(block) {
   if (!block) {
     return '';
   }
+  var hasMappingComment = false;
+  var mappingComment = "";
+  if(block.getParent()!= null && block.getParent().type==="comment"){
+    hasMappingComment = true;
+    mappingComment = block.getParent().getFieldValue("commentContent");
+  }
 
-  var blockCildren = block.getChildren();
-  if(blockCildren[2].type!=="comment")
-    metaComment = "";
+  var blockChildren = block.getChildren();
+  for(var i = 0; i < blockChildren.length; i++) {
+    var temptBlock = blockChildren[i].getNextBlock()
+    if(temptBlock!=null && temptBlock.type==="tablesqlquery"){
+      hasMeta = true;
+      break;
+    }
+    hasMeta = false;
+  }
 
-  if(metaComment==="")
+  for(var i = 0; i < blockChildren.length; i++) {
+    var temptBlock = blockChildren[i].getNextBlock()
+    if(temptBlock!=null && temptBlock.type==="subjectdef"){
+      hasComment = true;
+      break;
+    }
+    hasComment = false;
+  }
+  // console.log("hasComment in mapping" + commentContent);
+
+  if(!hasMeta)
     logicalTable =  "rr:logicalTable [ " + R2RML.statementToCode(block, 'mapping') + "];\n";
   else
     logicalTable =  "rr:logicalTable [ " + R2RML.statementToCode(block, 'mapping') +
@@ -260,27 +287,29 @@ R2RML.mapping = function(block) {
                     + "];\n";
 
   var subject =  "\n" + R2RML.statementToCode(block, 'subjects');
-  return R2RML.statementToCode(block, 'vocabs') + subject;
+
+  if(!hasMappingComment)
+    return R2RML.statementToCode(block, 'vocabs') + subject;
+  else
+    return R2RML.statementToCode(block, 'vocabs')
+           + "\n csv:mapping rdfs:comment \'" + mappingComment + "\' .\n"
+           + subject;
 };
 
 var subjectProperties = '';
 var predicateObjectProperties = '';
 
 R2RML.subjectdef = function(block) {
-  var childrenBlock = block.getChildren();
-  hasComment = false
-  for(var i =0; i < childrenBlock.length; i++){
-    if(childrenBlock[i].type==="comment")
-      hasComment = true;
-  }
+  // var childrenBlock = block.getChildren();
+  // hasComment = false
+  // for(var i =0; i < childrenBlock.length; i++){
+  //   if(childrenBlock[i].type==="comment")
+  //     hasComment = true;
+  // }
 
   var triplemapname = 'TriplesMap' + block.getFieldValue('ID');
   subjectProperties = '';
   predicateObjectProperties = '';
-  // var commentContent = block.getFieldValue("commentContent");
-  // if(block.getNextBlock().type === 'subjectdef'){
-  //   globalComment += "#" + commentContent + "\n";
-  // }
 
   R2RML.statementToCode(block, 'properties');
   R2RML.valueToCode(block, 'comment')

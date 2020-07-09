@@ -80,8 +80,8 @@ Blockly.Blocks['mapping'] = {
             .setCheck('subjectdef')
             .setAlign(Blockly.ALIGN_RIGHT);
         this.setColour('#005580');
-        this.setPreviousStatement(true, ['mapping']);
-        this.setNextStatement(true, ['mapping']);
+        this.setPreviousStatement(true, ['mapping','comment']);
+        this.setNextStatement(true, ['mapping', 'comment']);
         this.setTooltip('Creates a mapping.');
     }
 };
