@@ -26,23 +26,13 @@ R2RML.init = function(workspace) {
  * @return {string} Completed code.
  */
 R2RML.finish = function(code) {
-
-  if(metaComment===""){
-    return '# Mapping created using Juma editor. '
-                + '\n  @prefix rr: <http://www.w3.org/ns/r2rml#> .'
-                + '\n  @prefix rrf: <http://kdeg.scss.tcd.ie/ns/rrf#> . \n'
-                + '  @prefix  rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n'
-                + code
-                + generateFunctions();
-  }else {
-    return '# Mapping created using Juma editor. \n'
-           + metaComment
+    return '# Mapping created using Juma editor.'
            + '\n  @prefix rr: <http://www.w3.org/ns/r2rml#> . '
            + '\n  @prefix rrf: <http://kdeg.scss.tcd.ie/ns/rrf#> . \n'
            + '  @prefix  rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n'
            + code
            + generateFunctions();
-  }
+
 };
 
 var functions = {};
@@ -211,7 +201,7 @@ R2RML.comment = function(block){
     if(inTable(block)){
       metaComment = "";
       if(block.getFieldValue("commentContent")!=null){
-        metaComment = "#" + block.getFieldValue("commentContent") +" .";
+        metaComment = "  rdfs:comment \'" + block.getFieldValue("commentContent") +"\' ;\n";
       }
     }else if(block.getNextBlock()!=null){
       commentContent = "";
@@ -262,8 +252,13 @@ R2RML.mapping = function(block) {
   if(blockCildren[2].type!=="comment")
     metaComment = "";
 
+  if(metaComment==="")
+    logicalTable =  "rr:logicalTable [ " + R2RML.statementToCode(block, 'mapping') + "];\n";
+  else
+    logicalTable =  "rr:logicalTable [ " + R2RML.statementToCode(block, 'mapping') +
+                    metaComment
+                    + "];\n";
 
-  logicalTable =  "rr:logicalTable [ " + R2RML.statementToCode(block, 'mapping') + "];\n";
   var subject =  "\n" + R2RML.statementToCode(block, 'subjects');
   return R2RML.statementToCode(block, 'vocabs') + subject;
 };

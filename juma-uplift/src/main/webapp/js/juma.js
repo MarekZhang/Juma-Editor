@@ -59,8 +59,8 @@ Blockly.Blocks['comment'] = {
             .appendField('Comment: ')
             .appendField(new Blockly.FieldTextInput('insert comment content here'), 'commentContent');
         this.setInputsInline(true);
-        this.setPreviousStatement(true, ['bnode', 'predicate_object', 'subject', 'graph', 'tablesqlquery']);
-        this.setNextStatement(true, ['bnode', 'predicate_object', 'subject', 'graph','tablesqlquery']);
+        this.setPreviousStatement(true, ['mapping','subjectdef','tablesqlquery']);
+        this.setNextStatement(true, ['mapping','subjectdef','tablesqlquery']);
         this.setTooltip('insert comment content');
     }
 };
