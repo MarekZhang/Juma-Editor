@@ -59,8 +59,8 @@ Blockly.Blocks['comment'] = {
             .appendField('Comment: ')
             .appendField(new Blockly.FieldTextInput('insert comment content here'), 'commentContent');
         this.setInputsInline(true);
-        this.setPreviousStatement(true, ['bnode', 'predicate_object', 'subject', 'graph','subjectdef']);
-        this.setNextStatement(true, ['bnode', 'predicate_object', 'subject', 'graph','subjectdef']);
+        this.setPreviousStatement(true, ['bnode', 'predicate_object', 'subject', 'graph', 'tablesqlquery']);
+        this.setNextStatement(true, ['bnode', 'predicate_object', 'subject', 'graph','tablesqlquery']);
         this.setTooltip('insert comment content');
     }
 };
@@ -69,7 +69,7 @@ Blockly.Blocks['mapping'] = {
     init: function() {
         this.appendStatementInput('mapping')
             .appendField('Mapping')
-            .setCheck('tablesqlquery')
+            .setCheck(['tablesqlquery','comment'])
             .setAlign(Blockly.ALIGN_RIGHT);
         this.appendStatementInput('vocabs')
             .appendField('Vocabularies')
@@ -96,7 +96,7 @@ Blockly.Blocks['tablesqlquery'] = {
             .appendField(new Blockly.FieldDropdown([['table', 'table'], ['sql query', 'sqlquery']]), 'TABLESQLQUERY')
             .appendField(new Blockly.FieldLabel('click here to insert',''), 'sql');
         this.setInputsInline(true);
-        this.setPreviousStatement(true, ['mapping', 'tablesqlquery']);
+        this.setPreviousStatement(true, ['mapping', 'tablesqlquery','comment']);
         this.setTooltip('Defines a table or sql query.');
         this.sql = "click here to insert";
         // this.setMovable(false);
@@ -336,8 +336,8 @@ Blockly.Blocks['predicate_object'] = {
         this.appendValueInput("object")
             .appendField("and object")
             .setCheck(['object', 'linking_mappings']);
-        this.setPreviousStatement(true, ['bnode', 'predicate_object', 'subject', 'graph', 'comment']);
-        this.setNextStatement(true, ['bnode', 'predicate_object', 'subject', 'graph', 'comment']);
+        this.setPreviousStatement(true, ['bnode', 'predicate_object', 'subject', 'graph']);
+        this.setNextStatement(true, ['bnode', 'predicate_object', 'subject', 'graph']);
         this.setInputsInline(true);
         this.setTooltip('Structure to define predicates and objects.');
     }

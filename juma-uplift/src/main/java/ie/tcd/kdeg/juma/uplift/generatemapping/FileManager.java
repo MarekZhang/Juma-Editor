@@ -47,8 +47,8 @@ public class FileManager {
 		return localCsvPath;
 	}
 
-	public static boolean deleteCSVFile(String fileName, long id) {
-		File file = new File(CSV_FOLDER_PATH(id) + fileName);
+	public static boolean deleteCSVFile(String fileName, long id, String path) {
+		File file = new File(path + "/" + CSV_FOLDER_PATH(id) + fileName);
 		return file.delete();
 	}
 

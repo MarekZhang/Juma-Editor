@@ -308,7 +308,8 @@ public class EditMapping extends BasePage {
 	}
 
 	public Object onActionFromDelete(String fileName) throws IOException {
-		if (FileManager.deleteCSVFile(fileName, mapping.getId())) {
+		String path = req.getSession().getServletContext().getRealPath("/csvDB");
+		if (FileManager.deleteCSVFile(fileName, mapping.getId(), path)) {
 			refreshDiretory();
 		} else {
 			alertManager.error("File could not be deleted");
