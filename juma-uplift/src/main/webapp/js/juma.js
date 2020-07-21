@@ -62,8 +62,28 @@ Blockly.Blocks['comment'] = {
         this.setPreviousStatement(true, ['mapping','subjectdef','tablesqlquery']);
         this.setNextStatement(true, ['mapping','subjectdef','tablesqlquery']);
         this.setTooltip('insert comment content');
+    },onchange: function() {
+        validateComment(this);
     }
 };
+
+function validateComment(block) {
+    if(block.getDescendants()!==undefined){
+        var descendants = block.getDescendants();
+        for(var i = 0; i < descendants.length - 1; i++){
+            if(descendants[i].type=="comment" && descendants[i+1].type=="comment"){
+                alert("You can only insert one Comment block here.")
+                var blockChildId = descendants[i+1].getChildren()[0].id;
+                var parent = descendants[i+1].getParent();
+                descendants[i+1].getChildren()[0].unplug();
+                var blockChild = workspace.getBlockById(blockChildId);
+                parent.nextConnection.connect(blockChild.previousConnection);
+                descendants[i+1].dispose();
+                break;
+            }
+        }
+    }
+}
 
 Blockly.Blocks['mapping'] = {
     init: function() {
